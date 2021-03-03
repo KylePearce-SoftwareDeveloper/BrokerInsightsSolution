@@ -10,9 +10,9 @@ $con = mysqli_connect($serverName, $userName, $password, $dbName);
 
 if(mysqli_connect_errno())
 {
-    echo "Failed to connect!";
+    echo "Failed to connect!" . "<br>";
     exit();
 }
-echo "Connection success!";
+echo "Connection success!" . "<br>";
 
 ?>
