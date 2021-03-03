@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <title>
+            BrokerInsightsChallange
+        </title>
+        <script src = "../js/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    </head>
+    <body>
+        <div id = "app">
+            <table border='1' width='80%' style='border-collapse: collapse;'>
+                <tr>
+                    <th>customer_name</th>
+                    <th>customer_address</th>
+                    <th>premium</th>
+                    <th>policy_type</th>
+                    <th>insurer_name</th>
+                </tr>
+                <tr v-for="row in allData">
+                    <td>{{ row.customer_name }}</td>
+                    <td>{{ row.customer_address }}</td>
+                    <td>{{ row.premium }}</td>
+                    <td>{{ row.policy_type }}</td>
+                    <td>{{ row.insurer_name }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <script>
+            var app = new Vue({
+                el:'#app',
+                data:{
+                    allData:'',
+                },
+                methods:{
+                    fetchAllData:function(){
+                        axios.post('../php/index.php', {
+                            action: 'fetchall'
+                        }).then(function(response){
+                            app.allData = response.data;
+                        });
+                    }
+                },
+                created:function(){
+                    this.fetchAllData();
+                }
+            })
+        </script>
+    </body>
+</html>
