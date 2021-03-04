@@ -16,6 +16,16 @@
                     <th>policy_type</th>
                     <th>insurer_name</th>
                 </tr>
+                <!-- ADD-->
+                <tr>
+                    <td><input type = "text" v-model = "customer_name"></td>
+                    <td><input type = "text" v-model = "customer_address"></td>
+                    <td><input type = "text" v-model = "premium"></td>
+                    <td><input type = "text" v-model = "policy_type"></td>
+                    <td><input type = "text" v-model = "insurer_name"></td>
+                    <td><input type = "button" value = "Add" @click='addRecord();'></td>
+                </tr>
+                <!-- SHOW ALL-->
                 <tr v-for="row in allData">
                     <td>{{ row.customer_name }}</td>
                     <td>{{ row.customer_address }}</td>
@@ -30,7 +40,12 @@
             var app = new Vue({
                 el:'#app',
                 data:{
-                    allData:'',
+                    allData: '',
+                    customer_name: '',
+                    customer_address: '',
+                    premium: '',
+                    policy_type: '',
+                    insurer_name: ''
                 },
                 methods:{
                     fetchAllData:function(){
@@ -39,6 +54,25 @@
                         }).then(function(response){
                             app.allData = response.data;
                         });
+                    },
+                    addRecord: function(){
+                        if(app.customer_name != '' && app.customer_address != '' && app.premium != '' && app.policy_type != '' && app.insurer_name != ''){
+                        axios.post('../php/index.php', {
+                        action: 'addrecord',
+                        customer_name: app.customer_name,
+                        customer_address: app.customer_address,
+                        premium: app.premium,
+                        policy_type: app.policy_type,
+                        insurer_name: app.insurer_name
+                        }).then(function (response) {
+                            app.fetchAllData();
+                            app.customer_name = '';
+                            app.customer_address = '';
+                            app.premium = '';
+                            app.policy_type = '';
+                            app.insurer_name = '';
+                        })
+                    }
                     }
                 },
                 created:function(){
