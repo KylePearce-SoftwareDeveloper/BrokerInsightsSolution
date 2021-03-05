@@ -49,6 +49,7 @@
                     <!-- <td>{{ row.insurer_name }}</td> -->
                     <td><input type = "text" v-model = "row.insurer_name"></td>
                     <td><input type='button' value='Edit/Update' @click='updateRecord(index);'></td>
+                    <td><input type='button' value='Delete' @click='deleteRecord(index);'></td>
                 </tr>
             </table>
         </div>
@@ -115,6 +116,14 @@
                             app.insurer_name = '';
                         })
                     }
+                    },
+                    deleteRecord: function(index){
+                        axios.post('../php/index.php', {
+                            action: 'deleterecord',
+                            id: app.allData[index].id
+                        }).then(function(response){
+                            app.fetchAllData();
+                        });
                     }
                 },
                 created:function(){

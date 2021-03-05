@@ -63,4 +63,18 @@
         exit;
     }
 
+    //Delete record
+    if($recieved_data->action == 'deleterecord'){
+        $id = $recieved_data->id;
+
+        $query = "
+        DELETE FROM policies 
+        WHERE id = '$id';
+        ";
+
+        $statement = $connect->prepare($query);
+        $statement->execute();
+        exit;
+    }
+
 ?>
