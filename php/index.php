@@ -45,7 +45,7 @@
     //Edit record
     // Update record
     if($recieved_data->action == 'editrecord'){
-        $oldName = $recieved_data->oldName;
+        $id = $recieved_data->id;
         $new_customer_name = $recieved_data->new_customer_name;
         $new_customer_address = $recieved_data->new_customer_address;
         $new_premium = $recieved_data->new_premium;
@@ -55,7 +55,7 @@
         $query = "
         UPDATE policies 
         SET customer_name='$new_customer_name', customer_address='$new_customer_address', premium='$new_premium', policy_type='$new_policy_type', insurer_name='$new_insurer_name'
-        WHERE customer_name='$oldName';
+        WHERE id='$id';
         ";
   
         $statement = $connect->prepare($query);
