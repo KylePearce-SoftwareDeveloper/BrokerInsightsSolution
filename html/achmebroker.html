@@ -1,0 +1,164 @@
+<html>
+    <head>
+        <title>
+            BrokerInsightsChallange
+        </title>
+        <script src = "../js/vue.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="../js/javascript.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <link rel="stylesheet" href="../css/stylesheet.css">
+    </head>
+    <body class="arial">
+        <div class="BannerContainer">
+            <div class="Banner">
+                <div class="BannerContents">
+                    Broker Insights Challange
+                </div>
+            </div>
+        </div>
+        <div class="MenuContainer">
+            <div class="Menu">
+                <div class="MenuContents">
+                    <ul class="inline">
+                        <li><a id="index" href="index.html">Home</a></li>
+                        <li class="float-right"><a id="about" href="about.html">About</a></li>
+                    </ul>
+                    <div class="dropdown">
+                        <button class="dropbtn">Clients</button>
+                        <div class="dropdown-content">
+                            <a id="achmebroker" href="achmebroker.html">Achme Broker</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id = "app">
+            <table border='1' width='80%' style='border-collapse: collapse;'>
+                <tr>
+                    <th>customer_name</th>
+                    <!-- <th>Edit/Update</th> -->
+                    <th>customer_address</th>
+                    <!-- <th>Edit/Update</th> -->
+                    <th>premium</th>
+                    <!-- <th>Edit/Update</th> -->
+                    <th>policy_type</th>
+                    <!-- <th>Edit/Update</th> -->
+                    <th>insurer_name</th>
+                    <!-- <th>Edit/Update</th> -->
+                </tr>
+                <!-- ADD-->
+                <tr>
+                    <td><input type = "text" v-model = "customer_name"></td>
+                    <!-- <td></td> -->
+                    <td><input type = "text" v-model = "customer_address"></td>
+                    <!-- <td></td> -->
+                    <td><input type = "text" v-model = "premium"></td>
+                    <!-- <td></td> -->
+                    <td><input type = "text" v-model = "policy_type"></td>
+                    <!-- <td></td> -->
+                    <td><input type = "text" v-model = "insurer_name"></td>
+                    <!-- <td></td> -->
+                    <td><input type = "button" value = "Add" @click='addRecord();'></td>
+                    <!-- <td></td> -->
+                </tr>
+                <!-- SHOW ALL-->
+                <tr v-for="(row, index) in allData">
+                    <!-- <td>{{ row.customer_name }}</td> -->
+                    <td><input type = "text" v-model = "row.customer_name"></td>
+                    <!-- <td>{{ row.customer_address }}</td> -->
+                    <td><input type = "text" v-model = "row.customer_address"></td>
+                    <!-- <td>{{ row.premium }}</td> -->
+                    <td><input type = "text" v-model = "row.premium"></td>
+                    <!-- <td>{{ row.policy_type }}</td> -->
+                    <td><input type = "text" v-model = "row.policy_type"></td>
+                    <!-- <td>{{ row.insurer_name }}</td> -->
+                    <td><input type = "text" v-model = "row.insurer_name"></td>
+                    <td><input type='button' value='Edit/Update' @click='updateRecord(index);'></td>
+                    <td><input type='button' value='Delete' @click='deleteRecord(index);'></td>
+                </tr>
+            </table>
+        </div>
+
+        <script>
+            var app = new Vue({
+                el:'#app',
+                data:{
+                    allData: '',
+                    customer_name: '',
+                    customer_address: '',
+                    premium: '',
+                    policy_type: '',
+                    insurer_name: ''
+                },
+                methods:{
+                    fetchAllData:function(){
+                        axios.post('../php/index.php', {
+                            action: 'fetchall'
+                        }).then(function(response){
+                            app.allData = response.data;
+                        });
+                    },
+                    addRecord: function(){
+                        if(app.customer_name != '' && app.customer_address != '' && app.premium != '' && app.policy_type != '' && app.insurer_name != ''){
+                        axios.post('../php/index.php', {
+                        action: 'addrecord',
+                        customer_name: app.customer_name,
+                        customer_address: app.customer_address,
+                        premium: app.premium,
+                        policy_type: app.policy_type,
+                        insurer_name: app.insurer_name
+                        }).then(function (response) {
+                            app.fetchAllData();
+                            app.customer_name = '';
+                            app.customer_address = '';
+                            app.premium = '';
+                            app.policy_type = '';
+                            app.insurer_name = '';
+                        })
+                    }
+                    },
+                    updateRecord: function(index){
+                    var new_customer_name = app.allData[index].customer_name;
+                    var new_customer_address = app.allData[index].customer_address;
+                    var new_premium = app.allData[index].premium;
+                    var new_policy_type = app.allData[index].policy_type;
+                    var new_insurer_name = app.allData[index].insurer_name;
+                    if(new_customer_name !='' && new_customer_address !='' && new_premium !='' && new_policy_type !='' && new_insurer_name !=''){
+                        axios.post('../php/index.php', {
+                            action: 'editrecord',
+                            id: app.allData[index].id,
+                            new_customer_name: new_customer_name,
+                            new_customer_address: new_customer_address,
+                            new_premium: new_premium,
+                            new_policy_type: new_policy_type,
+                            new_insurer_name: new_insurer_name
+                        }).then(function (response) {
+                            app.fetchAllData();
+                            app.customer_name = '';
+                            app.customer_address = '';
+                            app.premium = '';
+                            app.policy_type = '';
+                            app.insurer_name = '';
+                        })
+                    }
+                    },
+                    deleteRecord: function(index){
+                        axios.post('../php/index.php', {
+                            action: 'deleterecord',
+                            id: app.allData[index].id
+                        }).then(function(response){
+                            app.fetchAllData();
+                        });
+                    }
+                },
+                created:function(){
+                    this.fetchAllData();
+                }
+            })
+        </script>
+        <div class="footer">
+            <p>By Kyle Pearce</p>
+        </div>
+    </body>
+</html>
